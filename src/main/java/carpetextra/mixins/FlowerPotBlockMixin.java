@@ -9,7 +9,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import carpetextra.helpers.FlowerPotHelper;
-import com.llamalad7.mixinextras.sugar.Local;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -32,17 +31,18 @@ public abstract class FlowerPotBlockMixin extends Block
         super(settings);
     }
 
-    @Inject(
-            method = "onUseWithItem",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z",
-                    ordinal = 0
-            )
-    )
-    private void onActivate(ItemStack stack, BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit, CallbackInfoReturnable<ActionResult> cir, @Local(ordinal = 1) BlockState blockState) {
-        // check if chunk should add force load when flower is placed in pot
-        FlowerPotHelper.updateLoadStatus(world, pos, ((FlowerPotBlock) blockState.getBlock()).getContent(), true);
+    @Inject(method = "onUseWithItem", at = @At("RETURN"))
+    private void onActivate(ItemStack stack, BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit, CallbackInfoReturnable<ActionResult> cir) {
+        if (!cir.getReturnValue().isAccepted()) {
+            return;
+        }
+
+        // Clear the old potted content, then force-load if the updated pot contains a wither rose.
+        FlowerPotHelper.updateLoadStatus(world, pos, this.content, false);
+        BlockState updatedState = world.getBlockState(pos);
+        if (updatedState.getBlock() instanceof FlowerPotBlock flowerPot) {
+            FlowerPotHelper.updateLoadStatus(world, pos, flowerPot.getContent(), true);
+        }
     }
 
     @Override
