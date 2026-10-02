@@ -3,7 +3,11 @@
 
 name: Pull Request Builds
 
-on: [pull_request]
+on:
+  pull_request:
+    branches:
+      - main
+      - 'v[0-9]*.[0-9][0-9]'
 
 jobs:
   Build:
