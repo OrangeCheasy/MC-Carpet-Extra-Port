@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
 import net.minecraft.block.Block;
-import net.minecraft.item.HoeItem;
+import net.minecraft.world.item.HoeItem;
 import net.minecraft.item.ItemUsageContext;
 
 @Mixin(HoeItem.class)

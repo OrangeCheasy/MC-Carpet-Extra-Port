@@ -1,6 +1,6 @@
 package carpetextra.mixins;
 
-import net.minecraft.item.AxeItem;
+import net.minecraft.world.item.AxeItem;
 import net.minecraft.item.ItemUsageContext;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
