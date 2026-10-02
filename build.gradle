@@ -4,8 +4,18 @@ plugins {
 }
 
 repositories {
-	maven {
-		url = 'https://masa.dy.fi/maven'
+	ivy {
+		name = 'Fabric Carpet GitHub Releases'
+		url = 'https://github.com/gnembon/fabric-carpet/releases/download'
+		patternLayout {
+			artifact "v${project.minecraft_version}/[artifact]-[revision].jar"
+		}
+		metadataSources {
+			artifact()
+		}
+		content {
+			includeModule 'carpet', 'fabric-carpet'
+		}
 	}
 	// For deobf yarn, until I've had time to review PRs in old mappings (to not break them)
 	exclusiveContent {
