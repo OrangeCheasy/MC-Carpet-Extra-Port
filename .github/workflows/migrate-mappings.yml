@@ -21,16 +21,16 @@ jobs:
         run: chmod +x gradlew
       - name: Materialize mapped Minecraft classes
         run: ./gradlew compileJava || true
-      - name: Inspect Minecraft class and interface signatures
+      - name: Inspect target source API
         run: |
-          for jar in $(find ~/.gradle/caches/fabric-loom/26.3 -type f -name '*.jar'); do
-            if [[ "$jar" == *minecraft-merged.jar || "$jar" == *minecraft-client.jar || "$jar" == *modern-yarn* ]]; then
-              echo "=== $jar"
-              jar tf "$jar" | grep -Ei '(^|/)(Axe|Hoe|Tool|Strip|Till|Fertil|Bonemeal).*\.class$' || true
-            fi
-          done
-          mapped=$(find ~/.gradle/caches/fabric-loom/minecraftMaven -type f -name '*modern-yarn*.jar' | head -n 1)
-          echo "=== Fertilizable signatures from $mapped"
-          javap -p -classpath "$mapped" net.minecraft.block.Fertilizable
-          echo "=== SpawnEntry signatures"
-          javap -p -classpath "$mapped" 'net.minecraft.world.biome.SpawnSettings$SpawnEntry'
+          raw="$HOME/.gradle/caches/fabric-loom/26.3/minecraft-merged.jar"
+          named=$(find "$HOME/.gradle/caches/fabric-loom/minecraftMaven" -type f -name '*.jar' ! -path '*-intermediary/*' ! -name 'mappings.jar' | grep 'minecraft-merged' | head -n 1)
+          echo "Mapped source jar: $named"
+          echo "=== Mapped Fertilizable interface"
+          javap -p -classpath "$named" net.minecraft.block.Fertilizable
+          echo "=== Official Item methods related to tools/blocks"
+          javap -p -classpath "$raw" net.minecraft.world.item.Item | grep -Ei 'axe|hoe|strip|till|tool|useOn|block' || true
+          echo "=== Official Tool component API"
+          javap -p -classpath "$raw" net.minecraft.world.item.component.Tool
+          echo "=== Official Tool class names"
+          jar tf "$raw" | grep -Ei 'net/minecraft/world/item/.*(Axe|Hoe|Tool|Strip|Till).*\.class$' || true
