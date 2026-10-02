@@ -29,6 +29,7 @@
     "DispenserBehaviorCarvedPumpkinMixin",
     "DispenserBehaviorMobHeadMixin",
     "MooshroomEntity_StatusEffectAccessorMixin",
+    "BlockTransformerComponent_allowNullPlayerMixin",
     "FlowerPotBlock_ContentAccessorMixin",
     "BoatItemAccessorMixin",
     "SculkCatalystMixin",
