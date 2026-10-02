@@ -21,12 +21,16 @@ jobs:
         run: chmod +x gradlew
       - name: Materialize mapped Minecraft classes
         run: ./gradlew compileJava || true
-      - name: List relevant mapped class names
+      - name: Inspect Minecraft class and interface signatures
         run: |
-          for jar in $(find ~/.gradle/caches/fabric-loom -type f -name '*.jar'); do
-            matches=$(jar tf "$jar" 2>/dev/null | grep -E '(AxeItem|HoeItem|BonemealSource|Fertilizable|SpawnEntry|ConstantIntProvider).*\.class$' || true)
-            if [ -n "$matches" ]; then
+          for jar in $(find ~/.gradle/caches/fabric-loom/26.3 -type f -name '*.jar'); do
+            if [[ "$jar" == *minecraft-merged.jar || "$jar" == *minecraft-client.jar || "$jar" == *modern-yarn* ]]; then
               echo "=== $jar"
-              echo "$matches"
+              jar tf "$jar" | grep -Ei '(^|/)(Axe|Hoe|Tool|Strip|Till|Fertil|Bonemeal).*\.class$' || true
             fi
           done
+          mapped=$(find ~/.gradle/caches/fabric-loom/minecraftMaven -type f -name '*modern-yarn*.jar' | head -n 1)
+          echo "=== Fertilizable signatures from $mapped"
+          javap -p -classpath "$mapped" net.minecraft.block.Fertilizable
+          echo "=== SpawnEntry signatures"
+          javap -p -classpath "$mapped" 'net.minecraft.world.biome.SpawnSettings$SpawnEntry'
