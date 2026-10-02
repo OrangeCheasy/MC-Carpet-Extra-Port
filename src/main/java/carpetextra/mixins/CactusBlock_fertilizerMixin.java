@@ -1,6 +1,7 @@
 package carpetextra.mixins;
 
 import carpetextra.CarpetExtraSettings;
+import net.minecraft.block.FertilizationCause;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.CactusBlock;
@@ -17,7 +18,7 @@ import org.spongepowered.asm.mixin.Mixin;
 public abstract class CactusBlock_fertilizerMixin implements Fertilizable
 {
     @Override
-    public boolean isFertilizable(WorldView world, BlockPos pos, BlockState state, net.minecraft.world.level.block.BonemealSource bonemealSource)
+    public boolean isFertilizable(WorldView world, BlockPos pos, BlockState state, net.minecraft.block.FertilizationCause bonemealSource)
     {
         int i = this.countCactusAbove(world, pos);
         int j = this.countCactusBelow(world, pos);

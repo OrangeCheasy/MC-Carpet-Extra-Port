@@ -1,6 +1,7 @@
 package carpetextra.mixins;
 
 import carpetextra.CarpetExtraSettings;
+import net.minecraft.block.FertilizationCause;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.Fertilizable;
@@ -19,7 +20,7 @@ public abstract class LilyPadBlock_fertilizerMixin implements Fertilizable {
     @Shadow protected abstract boolean canPlantOnTop(BlockState floor, BlockView world, BlockPos pos);
 
     @Override
-    public boolean isFertilizable(WorldView world, BlockPos pos, BlockState state, net.minecraft.world.level.block.BonemealSource bonemealSource) {
+    public boolean isFertilizable(WorldView world, BlockPos pos, BlockState state, net.minecraft.block.FertilizationCause bonemealSource) {
         return CarpetExtraSettings.betterBonemeal;
     }
 

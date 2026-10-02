@@ -1,6 +1,7 @@
 package carpetextra.mixins;
 
 import carpetextra.CarpetExtraSettings;
+import net.minecraft.block.FertilizationCause;
 import net.minecraft.block.*;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
@@ -14,7 +15,7 @@ import org.spongepowered.asm.mixin.Mixin;
 public abstract class SugarCaneBlock_fertilizerMixin implements Fertilizable
 {
     @Override
-    public boolean isFertilizable(WorldView world, BlockPos pos, BlockState state, net.minecraft.world.level.block.BonemealSource bonemealSource)
+    public boolean isFertilizable(WorldView world, BlockPos pos, BlockState state, net.minecraft.block.FertilizationCause bonemealSource)
     {
         int i = this.countSugarCaneAbove(world, pos);
         int j = this.countSugarCaneBelow(world, pos);

@@ -36,9 +36,7 @@ import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.CowEntity;
 import net.minecraft.entity.passive.GoatEntity;
 import net.minecraft.entity.passive.MooshroomEntity;
-import net.minecraft.world.item.AxeItem;
 import net.minecraft.item.BoatItem;
-import net.minecraft.world.item.HoeItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -46,6 +44,7 @@ import net.minecraft.item.ShearsItem;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.registry.tag.BlockTags;
+import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.util.math.BlockPointer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
@@ -193,19 +192,19 @@ public class CarpetExtraDispenserBehaviors {
         }
 
         // dispensersStripBlocks
-        if(CarpetExtraSettings.dispensersStripBlocks && item instanceof AxeItem && (StripBlocksDispenserBehavior.canStrip(frontBlock) || StripBlocksDispenserBehavior.isStripResult(frontBlock))) {
+        if(CarpetExtraSettings.dispensersStripBlocks && stack.isIn(ItemTags.AXES) && (StripBlocksDispenserBehavior.canStrip(frontBlock) || StripBlocksDispenserBehavior.isStripResult(frontBlock))) {
             return STRIP_BLOCK;
         }
 
         // dispensersTillSoil
-        if(CarpetExtraSettings.dispensersTillSoil && item instanceof HoeItem) {
+        if(CarpetExtraSettings.dispensersTillSoil && stack.isIn(ItemTags.HOES)) {
             // check block in front of dispenser and one block down
             for(int i = 0; i < 2; i++) {
                 BlockPos hoeBlockPos = frontBlockPos.down(i);
                 Block hoeBlock = world.getBlockState(hoeBlockPos).getBlock();
 
                 // check if block is in tilled blocks, or is farmland (to prevent hoe being dispensed when you don't want it to)
-                if(TillSoilDispenserBehavior.TILLED_BLOCKS.contains(hoeBlock) || hoeBlock == Blocks.FARMLAND) {
+                if(TillSoilDispenserBehavior.canTill(hoeBlock) || hoeBlock == Blocks.FARMLAND) {
                     return TILL_SOIL;
                 }
             }
