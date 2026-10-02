@@ -26,13 +26,13 @@ public abstract class CactusBlock_fertilizerMixin implements Fertilizable
     }
     
     @Override
-    public boolean canGrow(World world, Random random, BlockPos pos, BlockState state, net.minecraft.world.level.block.BonemealSource bonemealSource)
+    public boolean canGrow(World world, Random random, BlockPos pos, BlockState state, FertilizationCause bonemealSource)
     {
         return true;
     }
     
     @Override
-    public void grow(ServerWorld world, Random random, BlockPos pos, BlockState state, net.minecraft.world.level.block.BonemealSource bonemealSource)
+    public void grow(ServerWorld world, Random random, BlockPos pos, BlockState state, FertilizationCause bonemealSource)
     {
         int i = this.countCactusAbove(world, pos);
         BlockPos growPos = pos.up(i + 1);

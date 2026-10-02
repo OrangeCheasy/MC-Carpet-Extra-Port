@@ -23,13 +23,13 @@ public abstract class SugarCaneBlock_fertilizerMixin implements Fertilizable
     }
     
     @Override
-    public boolean canGrow(World world, Random random, BlockPos pos, BlockState state, net.minecraft.world.level.block.BonemealSource bonemealSource)
+    public boolean canGrow(World world, Random random, BlockPos pos, BlockState state, FertilizationCause bonemealSource)
     {
         return true;
     }
     
     @Override
-    public void grow(ServerWorld world, Random random, BlockPos pos, BlockState state, net.minecraft.world.level.block.BonemealSource bonemealSource)
+    public void grow(ServerWorld world, Random random, BlockPos pos, BlockState state, FertilizationCause bonemealSource)
     {
         int i = this.countSugarCaneAbove(world, pos);
         world.setBlockState(pos.up(i + 1), Blocks.SUGAR_CANE.getDefaultState());
