@@ -1,0 +1,49 @@
+package carpetextra.dispenser.behaviors;
+
+import java.util.List;
+
+import net.minecraft.block.DispenserBlock;
+import net.minecraft.block.dispenser.FallibleItemDispenserBehavior;
+import net.minecraft.entity.EntityTypes;
+import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.entity.passive.ChickenEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.predicate.entity.EntityPredicates;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.math.BlockPointer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
+
+public class ShearChickenDispenserBehavior extends FallibleItemDispenserBehavior {
+    @Override
+    protected ItemStack dispenseSilently(BlockPointer pointer, ItemStack stack) {
+        this.setSuccess(true);
+        ServerWorld world = pointer.world();
+        BlockPos frontBlockPos = pointer.pos().offset(pointer.state().get(DispenserBlock.FACING));
+        Box frontBlockBox = new Box(frontBlockPos);
+
+        // get adult chickens in front of dispenser
+        List<ChickenEntity> chickens = world.getEntitiesByType(EntityTypes.CHICKEN, frontBlockBox, EntityPredicates.VALID_LIVING_ENTITY.and((chickenEntity) -> !((AnimalEntity) chickenEntity).isBaby()));
+
+        if(!chickens.isEmpty()) {
+            // choose a random chicken in front of dispenser to shear
+            ChickenEntity chicken = chickens.get(world.getRandom().nextInt(chickens.size()));
+
+            // damage chicken, drop feather if successful
+            if(chicken.damage(world, world.getDamageSources().generic(), 1)) {
+                chicken.dropItem(world, Items.FEATHER);
+
+                // damage shears, remove if broken
+                stack.damage(1, world, null, (_) -> stack.setCount(0));
+
+                // return shears
+                return stack;
+            }
+        }
+
+        // fail to dispense
+        this.setSuccess(false);
+        return stack;
+    }
+}
