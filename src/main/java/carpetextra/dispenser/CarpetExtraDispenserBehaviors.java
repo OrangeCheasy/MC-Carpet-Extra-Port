@@ -203,8 +203,8 @@ public class CarpetExtraDispenserBehaviors {
                 BlockPos hoeBlockPos = frontBlockPos.down(i);
                 Block hoeBlock = world.getBlockState(hoeBlockPos).getBlock();
 
-                // check if block is in tilled blocks, or is farmland (to prevent hoe being dispensed when you don't want it to)
-                if(TillSoilDispenserBehavior.canTill(hoeBlock) || hoeBlock == Blocks.FARMLAND) {
+                // keep a hoe in the dispenser when the target is tillable or already farmland
+                if(TillSoilDispenserBehavior.canTill(hoeBlock)) {
                     return TILL_SOIL;
                 }
             }
