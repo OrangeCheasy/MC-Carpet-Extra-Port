@@ -1,4 +1,4 @@
-name: Temporary Mapping Migration
+name: Temporary Mapping Diagnostic
 
 on:
   pull_request:
@@ -7,7 +7,7 @@ on:
       - 'v[0-9]*.[0-9][0-9]'
 
 jobs:
-  migrate:
+  inspect:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -19,9 +19,14 @@ jobs:
           cache: gradle
       - name: Grant execute permission to gradlew
         run: chmod +x gradlew
-      - name: Migrate source to Mojang mappings
-        run: ./gradlew migrateMappings --mappings "net.minecraft:mappings:26.3"
-      - uses: actions/upload-artifact@v7
-        with:
-          name: migrated-source-minecraft-26.3
-          path: remappedSrc
+      - name: Materialize mapped Minecraft classes
+        run: ./gradlew compileJava || true
+      - name: List relevant mapped class names
+        run: |
+          for jar in $(find ~/.gradle/caches/fabric-loom -type f -name '*.jar'); do
+            matches=$(jar tf "$jar" 2>/dev/null | grep -E '(AxeItem|HoeItem|BonemealSource|Fertilizable|SpawnEntry|ConstantIntProvider).*\.class$' || true)
+            if [ -n "$matches" ]; then
+              echo "=== $jar"
+              echo "$matches"
+            fi
+          done
